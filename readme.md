@@ -1,24 +1,27 @@
 # <img src="./frontend/public/uploadit.png" alt="UploadiT Logo" width="40" /> <span style="position: relative; top: -7px">UploadiT</span>
 
 
-A **FastAPI + Pinecone + Next.js** application that allows users to upload documents (PDF, DOCX, TXT) and ask questions based on the document content. Each user session has ephemeral vector embeddings stored in **Pinecone**, allowing session-specific context and automatic cleanup.
+A **FastAPI + Pinecone + Next.js** application that allows users to upload and query multiple documents (PDF, DOCX, TXT) using semantic search and conversational AI.
+Each user session maintains isolated embeddings stored in **Pinecone**, ensuring secure, session-specific context with automatic cleanup.
 
 ---
 
-## Features
+## 🚀 Features
 
-- ✅ Upload documents (PDF, DOCX, TXT) and automatically extract text.
-- ✅ Chunk and embed document content using **SentenceTransformers**.
-- ✅ Store vectors in **Pinecone** for session-specific question answering.
-- ✅ Ask natural language questions about uploaded documents.
-- ✅ Session-based ephemeral memory: each session’s embeddings are isolated.
-- ✅ Clear session embeddings manually or automatically after inactivity.
-- ✅ Automatic session expiration to clean up abandoned sessions and disk storage.
+- ✅ Upload one or more documents (PDF, DOCX, TXT) — up to 5 per session.
+- ✅ Automatically extract, chunk, and embed document content using **SentenceTransformers**.
+- ✅ Store vectors in **Pinecone** for fast semantic search per session.
+- ✅ Ask **natural language questions** based on all uploaded documents combined.
+- ✅ Session-based ephemeral memory — each session’s data is isolated.
+- ✅ Manual and automatic session cleanup for expired or inactive sessions.
 - ✅ Frontend built with **Next.js**, providing an interactive chat interface.
+- ✅ Improved UX:
+    - Upload button shows loader and disables during upload.
+    - Sidebar displays uploaded documents with “Upload More” option (max 5).
 
 ---
 
-## Tech Stack
+## 🧩 Tech Stack
 
 - **Backend:** FastAPI, Pinecone, SentenceTransformers, OpenAI (optional for LLM answers)
 - **Frontend:** Next.js (React)
@@ -28,7 +31,7 @@ A **FastAPI + Pinecone + Next.js** application that allows users to upload docum
 
 ---
 
-## Setup Instructions
+## ⚙️ Setup Instructions
 
 ### 1. Clone the Repository
 
@@ -79,10 +82,26 @@ npm install
 npm run dev
 ```
 
-## Usage
+## 💡 Usage Guide
 
- - Open the frontend in your browser.
- - Create a new session → receive a session_id.
- - Upload a PDF, DOCX, or TXT document.
- - Ask questions related to the uploaded document.
- - Clear session embeddings manually via the "Clear Session" button or let them expire automatically.
+ - Open the app in your browser.
+ - A new session will automatically be created.
+ - Upload one or more documents (PDF, DOCX, or TXT).
+ - Wait for the upload loader to finish — your files will appear in the sidebar.
+ - Ask natural-language questions related to the uploaded documents.
+ - Upload additional documents at any time (max 5 per session).
+ - Use “Clear Session” to reset and start fresh.
+
+## 🧠 Example Use Cases
+ - Research paper Q&A
+ - Legal or policy document search
+ - Knowledge base assistant
+ - Study material summarization
+ - Multi-document comparison
+
+## 📸 UI Enhancements
+ - Modern chat layout with message bubbles
+ - Visual feedback for uploading state
+ - File list panel showing uploaded documents
+ - Dynamic upload button state (Upload → Uploading…)
+ - File input clears automatically after successful upload

@@ -51,20 +51,22 @@ def chunk_text(text, chunk_size=1000):
     return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
 
 
-# -------------------- Embedding --------------------
-def embed_text(text, session_id: str, prefix="chunk"):
+# -------------------- Embedding Helpers --------------------
+def embed_text_chunks(chunks, session_id: str, prefix="chunk"):
     """
-    Embed text and upload to Pinecone with session metadata.
+    Embed a list of text chunks and upload to Pinecone.
     """
-    chunks = chunk_text(text)
-    vectors = []
+    if not chunks:
+        print("⚠️ No chunks to embed.")
+        return
 
+    vectors = []
     for i, chunk in enumerate(chunks):
         vector = model.encode(chunk).tolist()
         vectors.append((
-            f"{session_id}-{prefix}-{i}",  # vector ID
+            f"{session_id}-{prefix}-{i}",
             vector,
-            {"text": chunk, "session_id": session_id}  # metadata for session
+            {"text": chunk, "session_id": session_id}
         ))
 
     # Upsert in batches
@@ -75,19 +77,50 @@ def embed_text(text, session_id: str, prefix="chunk"):
     print(f"✅ Uploaded {len(chunks)} chunks for session {session_id}")
 
 
+def embed_text(text, session_id: str, prefix="chunk"):
+    """Convenience wrapper for embedding full text."""
+    chunks = chunk_text(text)
+    embed_text_chunks(chunks, session_id, prefix=prefix)
+
+
+# -------------------- File-based embedding --------------------
 def embed_pdf(pdf_path, session_id: str):
     text = load_pdf_text(pdf_path)
     embed_text(text, session_id, prefix=os.path.basename(pdf_path))
 
 
-def embed_document(file_path, session_id: str):
+def embed_document(data, session_id: str):
+    """
+    Flexible entry point:
+    - If `data` is a path to a file, detect file type and process it.
+    - If `data` is already a list of text chunks, embed them directly.
+    - If `data` is a single string, chunk and embed it directly.
+    """
+    # Case 1: list of chunks already
+    if isinstance(data, list):
+        print(f"🧩 Embedding pre-chunked text for session {session_id}")
+        embed_text_chunks(data, session_id, prefix="manual")
+        return
+
+    # Case 2: plain text
+    if isinstance(data, str) and not os.path.exists(data):
+        print(f"🧠 Embedding raw text input for session {session_id}")
+        embed_text(data, session_id, prefix="manual")
+        return
+
+    # Case 3: file path
+    if not os.path.exists(data):
+        raise ValueError(f"Invalid file path: {data}")
+
+    file_path = data
     ext = os.path.splitext(file_path)[1].lower()
+
     if ext == ".pdf":
         print(f"📄 Embedding PDF: {file_path}")
         embed_pdf(file_path, session_id)
     elif ext == ".txt":
         print(f"📜 Embedding TXT: {file_path}")
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             text = f.read()
         embed_text(text, session_id, prefix=os.path.basename(file_path))
     elif ext == ".docx":
