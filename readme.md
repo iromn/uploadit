@@ -34,7 +34,6 @@ A **FastAPI + Pinecone + Next.js** application that allows users to upload docum
 
 ```
 git clone https://github.com/iromn/uploadit.git
-cd doc-qa-bot
 ```
 
 ### 2. Install Backend Dependencies
