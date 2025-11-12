@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+const API_BASE = process.env.UPLOADIT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function Home() {
   const [files, setFiles] = useState([]);
@@ -17,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     const createSession = async () => {
       try {
-        const res = await axios.post("http://localhost:8000/session");
+        const res = await axios.post(`${API_BASE}/session`);
         setSessionId(res.data.session_id);
         console.log("Session created:", res.data.session_id);
       } catch (err) {
@@ -53,7 +54,7 @@ export default function Home() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8000/upload", formData, {
+      const res = await axios.post(`${API_BASE}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -75,7 +76,7 @@ export default function Home() {
   const fetchSessionFiles = async () => {
     if (!sessionId) return;
     try {
-      const res = await axios.get("http://localhost:8000/session_files", {
+      const res = await axios.get(`${API_BASE}/session_files`, {
         params: { session_id: sessionId },
       });
       setUploadedFiles(res.data.files || []);
@@ -98,7 +99,7 @@ export default function Home() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/ask", {
+      const res = await axios.post(`${API_BASE}/ask`, {
         session_id: sessionId,
         question: input,
       });
@@ -115,7 +116,7 @@ export default function Home() {
   const clearSession = async () => {
     if (!sessionId) return;
     try {
-      await axios.post("http://localhost:8000/clear_session", null, {
+      await axios.post(`${API_BASE}/clear_session`, null, {
         params: { session_id: sessionId },
       });
       setChat([]);
