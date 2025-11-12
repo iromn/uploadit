@@ -3,7 +3,6 @@ uvicorn==0.38.0
 python-dotenv==1.2.1
 
 # ML stack
-torch==2.2.2
 scikit-learn==1.7.2
 scipy==1.15.3
 numpy==1.26.4
