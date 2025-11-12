@@ -33,7 +33,7 @@ A **FastAPI + Pinecone + Next.js** application that allows users to upload docum
 ### 1. Clone the Repository
 
 ```
-git clone https://github.com/yourusername/doc-qa-bot.git
+git clone https://github.com/iromn/uploadit.git
 cd doc-qa-bot
 ```
 
