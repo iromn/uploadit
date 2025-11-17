@@ -24,9 +24,28 @@ if INDEX_NAME not in pc.list_indexes().names():
 
 index = pc.Index(INDEX_NAME)
 
-# Load embedding model once
-print("🔍 Loading embedding model...")
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# --------------------------------------------------------------
+# 🔥 LAZY-LOADED MODEL (Fixes Render out-of-memory issue)
+# --------------------------------------------------------------
+# Instead of loading the model at import time, we load it only
+# the first time an embedding is needed.
+
+model = None  # Will be loaded on demand
+
+
+def get_model():
+    global model
+    if model is None:
+        print("🔍 Loading lightweight embedding model (MiniLM-L3-v2)...")
+
+        # ORIGINAL MODEL (COMMENTED OUT — too heavy for free hosting)
+        # model = SentenceTransformer("all-MiniLM-L6-v2")
+
+        # NEW LIGHTWEIGHT MODEL (Much smaller memory footprint)
+        model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+
+        print("✅ Model loaded successfully.")
+    return model
 
 
 # -------------------- Text extraction helpers --------------------
