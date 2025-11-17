@@ -81,7 +81,7 @@ def embed_text_chunks(chunks, session_id: str, prefix="chunk"):
 
     vectors = []
     for i, chunk in enumerate(chunks):
-        vector = model.encode(chunk).tolist()
+        vector = get_model().encode(chunk).tolist()
         vectors.append((
             f"{session_id}-{prefix}-{i}",
             vector,
